@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -34,18 +35,28 @@ type BybitTickerData struct {
 	} `json:"result"`
 }
 
+// Helper function to format numbers with thousand separators and 2 decimal places
+func formatNumber(numStr string) string {
+	num, err := strconv.ParseFloat(numStr, 64)
+	if err != nil {
+		return numStr // return original string if parsing fails
+	}
+	// Format with thousand separator and 2 decimal places
+	return fmt.Sprintf("%.2f", num)
+}
+
 func main() {
 	// Fetch Binance data
 	binanceTicker, err := getBinanceBTCData()
 	if err != nil {
 		fmt.Printf("Error fetching Binance data: %v\n", err)
 	} else {
-		fmt.Printf("\nBinance Bitcoin Information:\n")
-		fmt.Printf("Current Price: $%s\n", binanceTicker.LastPrice)
-		fmt.Printf("24h Change: %s%%\n", binanceTicker.PriceChangePercent)
-		fmt.Printf("24h High: $%s\n", binanceTicker.High24h)
-		fmt.Printf("24h Low: $%s\n", binanceTicker.Low24h)
-		fmt.Printf("24h Volume: %s BTC\n", binanceTicker.Volume)
+		fmt.Println("\nBinance Bitcoin Information:")
+		fmt.Printf("Current Price: $%s\n", formatNumber(binanceTicker.LastPrice))
+		fmt.Printf("24h Change: %s%%\n", formatNumber(binanceTicker.PriceChangePercent))
+		fmt.Printf("24h High: $%s\n", formatNumber(binanceTicker.High24h))
+		fmt.Printf("24h Low: $%s\n", formatNumber(binanceTicker.Low24h))
+		fmt.Printf("24h Volume: %s BTC\n", formatNumber(binanceTicker.Volume))
 	}
 
 	// Add a small delay between requests
@@ -57,14 +68,14 @@ func main() {
 		fmt.Printf("Error fetching Bybit data: %v\n", err)
 	} else if len(bybitTicker.Result.List) > 0 {
 		data := bybitTicker.Result.List[0]
-		fmt.Printf("\nBybit Bitcoin Information:\n")
-		fmt.Printf("Current Price: $%s\n", data.LastPrice)
-		fmt.Printf("24h Change: %s%%\n", data.PriceChange24h)
-		fmt.Printf("24h High: $%s\n", data.High24h)
-		fmt.Printf("24h Low: $%s\n", data.Low24h)
-		fmt.Printf("24h Volume: %s BTC\n", data.Volume24h)
+		fmt.Println("\nBybit Bitcoin Information:")
+		fmt.Printf("Current Price: $%s\n", formatNumber(data.LastPrice))
+		fmt.Printf("24h Change: %s%%\n", formatNumber(data.PriceChange24h))
+		fmt.Printf("24h High: $%s\n", formatNumber(data.High24h))
+		fmt.Printf("24h Low: $%s\n", formatNumber(data.Low24h))
+		fmt.Printf("24h Volume: %s BTC\n", formatNumber(data.Volume24h))
 	} else {
-		fmt.Printf("\nNo Bybit data available\n")
+		fmt.Println("\nNo Bybit data available")
 	}
 }
 
