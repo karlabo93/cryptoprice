@@ -70,7 +70,9 @@ func main() {
 		data := bybitTicker.Result.List[0]
 		fmt.Println("\nBybit Bitcoin Information:")
 		fmt.Printf("Current Price: $%s\n", formatNumber(data.LastPrice))
-		fmt.Printf("24h Change: %s%%\n", formatNumber(data.PriceChange24h))
+		vol, _ := strconv.ParseFloat(data.PriceChange24h, 64)
+		vol *= 100
+		fmt.Printf("24h Change: %.2f%%\n", vol)
 		fmt.Printf("24h High: $%s\n", formatNumber(data.High24h))
 		fmt.Printf("24h Low: $%s\n", formatNumber(data.Low24h))
 		fmt.Printf("24h Volume: %s BTC\n", formatNumber(data.Volume24h))
